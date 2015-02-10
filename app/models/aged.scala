@@ -12,6 +12,6 @@ class Aged(tag: Tag) extends Table[(Int, String, String, Byte, Char, Date, Int)]
   def birthed = column[Date]("BIRTHED")
   def insuranceId = column[Int]("INSURANCE_ID")
   def * = (id, name, kana, age, sex, birthed, insuranceId)
-  def insurance = foreignKey("INSURANCE", insuranceId, insrance)
+  def insurance = foreignKey("INSURANCE_FK", insuranceId, insrances)(_.id)
 }
 val aged = TableQuery[Aged]
