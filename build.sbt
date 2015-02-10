@@ -14,5 +14,5 @@ libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "5.1.34",
   "com.typesafe.slick" %% "slick" % "2.1.0",
   "com.typesage.slick" %% "play-slick" % "0.8.1",
-  "ws.securesocial" %% "securesocial" % "2.1.4"
+  "ws.securesocial" % "securesocial_2.10" % "2.1.4"
 )
