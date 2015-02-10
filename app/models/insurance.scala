@@ -1,7 +1,7 @@
 package models
 import scala.slick.driver.MySQLDriver.simple._
 
-class Insurances(tag: Tag) extends Table[(Int, Byte, Date, Date)](tag, "insrances") {
+class Insurances(tag: Tag) extends Table[(Int, Byte, Date, Date)](tag, "insurances") {
   def id = column[Int]("id", O.PrimaryKey)
   def nursingCareLevel = column[Byte]("level")
   def started = column[Date]("started")
@@ -10,4 +10,4 @@ class Insurances(tag: Tag) extends Table[(Int, Byte, Date, Date)](tag, "insrance
   def * = (id, nursingCareLevel, started, expired)
   def aged = foreignKey("aged_fk", agedId, aged)(_.id)
 }
-val insurances = TableQuery[Insrances]
+val insurances = TableQuery[Insurances]
