@@ -1,5 +1,6 @@
 package models
 import scala.slick.driver.MySQLDriver.simple._
+import models.insurance
 import java.util.Date
 
 class Aged(tag: Tag) extends Table[(Int, String, String, Byte, Char, Date, Int)](tag, "AGED") {
@@ -11,5 +12,6 @@ class Aged(tag: Tag) extends Table[(Int, String, String, Byte, Char, Date, Int)]
   def birthed = column[Date]("BIRTHED")
   def insuranceId = column[Int]("INSURANCE_ID")
   def * = (id, name, kana, age, sex, birthed, insuranceId)
+  def insurance = foreignKey("INSURANCE", insuranceId, insrance)
 }
 val aged = TableQuery[Aged]
