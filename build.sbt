@@ -15,5 +15,6 @@ libraryDependencies ++= Seq(
   ws,
   "mysql" % "mysql-connector-java" % "5.1.34",
   "com.typesafe.play" %% "play-slick" % "0.8.1",
-  "ws.securesocial" %% "securesocial" % "master-SNAPSHOT"
+  "jp.t2v" %% "play2-auth"      % "0.13.0",
+  "jp.t2v" %% "play2-auth-test" % "0.13.0" % "test"
 )
