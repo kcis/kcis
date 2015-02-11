@@ -1,18 +1,28 @@
 package controllers
 
-import securesocial.core.{UserId, Identity, UserServicePlugin, AuthenticationMethod}
-import securesocial.core.SecureSocial
+import securesocial.core._
+import service.DemoUser
 import play.api._
 import play.api.mvc._
 
-object Application extends Controller with securesocial.core.SecureSocial {
+class Application(override implicit val env: RuntimeEnvironment[DemoUser]) extends securesocial.core.SecureSocial[DemoUser] {
 
-  def index = UserAwareAction { implicit request =>
-    val userName = request.user match {
-      case Some(user) => user.fullName
-      case _ => "guest"
+  def index = SecuredAction { implicit request =>
+    Ok(views.html.index(request.user.main))
+  }
+
+  def linkResult = SecuredAction { implicit request =>
+    Ok(views.html.linkResult(request.user))
+  }
+
+  /**
+   * Sample use of SecureSocial.currentUser. Access the /current-user to test it
+   */
+  def currentUser = Action.async { implicit request =>
+    SecureSocial.currentUser[DemoUser].map { maybeUser =>
+      val userId = maybeUser.map(_.main.userId).getOrElse("unknown")
+      Ok(s"Your id is $userId")
     }
-    Ok(views.html.index("Hello %s.".format(userName)))
   }
 
 }
