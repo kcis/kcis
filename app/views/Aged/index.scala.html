@@ -1,0 +1,37 @@
+@(session: Session, results: List[(Int, String, String, Byte, Char, java.sql.Date, java.sql.Date)])
+
+<html>
+  <body>
+    <table>
+      <tr>
+        <th>選択</th>
+        <th>画像</th>
+        <th>番号</th>
+        <th>氏名</th>
+        <th>カナ名</th>
+        <th>年齢</th>
+        <th>性別</th>
+        <th>誕生日</th>
+        <th>介護保険確認</th>
+      </tr>
+@for(result <- results)
+{
+      <tr>
+        <td>◎</td>
+  @defining(("/assets/pics/" + aged.id + ".jpg", aged.name + "さん"))
+  {
+    (src, alt) =>
+        <td><img src="@src" alt="@alt"></td>
+  }
+        <td>@aged.id</td>
+        <td>@aged.name</td>
+        <td>@aged.kana</td>
+        <td>@aged.age</td>
+        <td>@aged.sex</td>
+        <td>@aged.birthed</td>
+        <td>@insrance.expired</td>
+      </tr>
+}
+    </table>
+  </body>
+</html>
