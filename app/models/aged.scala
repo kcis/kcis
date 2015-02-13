@@ -19,4 +19,4 @@ class Aged(tag: Tag) extends Table[(Int, String, String, Byte, Char, Date, Strin
   def insurance = foreignKey("insurance_fk", insuranceId, insurances)(_.id)
   def home = foreignKey("home_fk", homeId, homes)(_.id)
 }
-val ageds = TableQuery[Ageds]
+val aged = TableQuery[Aged]
