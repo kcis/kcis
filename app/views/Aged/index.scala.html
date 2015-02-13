@@ -1,6 +1,8 @@
-@(session: Session, results: List[(Int, String, String, Byte, Char, java.sql.Date, java.sql.Date)])
+@(implicit session: Session, results: List[(Int, String, String, Byte, Char, java.sql.Date, java.sql.Date)])
 
+<!DOCTYPE html>
 <html>
+  @header("利用者一覧")
   <body>
     <table>
       <tr>
@@ -18,19 +20,19 @@
 {
       <tr>
         <td>◎</td>
-  @defining(("/assets/pics/" + aged.id + ".jpg", aged.name + "さん"))
+  @defining(("/assets/pics/" + aged.id + ".jpg", aged.name + "さん", result._1, result._2, result._3, result._4, result._5, result._6, result._7))
   {
-    (src, alt) =>
+    case (src, alt, id, name, kana, age, sex, birthed, expired) =>
         <td><img src="@src" alt="@alt"></td>
-  }
-        <td>@aged.id</td>
-        <td>@aged.name</td>
-        <td>@aged.kana</td>
-        <td>@aged.age</td>
-        <td>@aged.sex</td>
-        <td>@aged.birthed</td>
-        <td>@insrance.expired</td>
+        <td>@id</td>
+        <td>@name</td>
+        <td>@kana</td>
+        <td>@age</td>
+        <td>@sex</td>
+        <td>@birthed</td>
+        <td>@expired</td>
       </tr>
+  }
 }
     </table>
   </body>
