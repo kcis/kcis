@@ -1,22 +1,26 @@
 package models
 import scala.slick.driver.MySQLDriver.simple._
+import scala.slick.ast.ColumnOption.NotNull
 import java.sql.Date
 
 class Aged(tag: Tag) extends Table[(Int, String, String, Byte, Char, Date, String, String, String, Int, Int, Date)](tag, "aged") {
-  def id = column[Int]("aged_id", O.PrimaryKey)
-  def name = column[String]("name")
-  def kana = column[String]("kana")
-  def age = column[Byte]("age")
-  def sex = column[Char]("sex")
-  def birthed = column[Date]("birthed")
-  def address = column[String]("address")
-  def postal = column[String]("postal")
-  def phone = column[String]("phone")
-  def insuranceId = column[Int]("insurance_id")
-  def homeId = column[Int]("home_id")
+  def id = column[Int]("id", O.PrimaryKey)
+  def name = column[String]("name", NotNull)
+  def kana = column[String]("kana", NotNull)
+  def age = column[Byte]("age", NotNull)
+  def sex = column[Char]("sex", NotNull)
+  def birthed = column[Date]("birthed", NotNull)
+  def address = column[String]("address", NotNull)
+  def postal = column[String]("postal", NotNull)
+  def phone = column[String]("phone", NotNull)
+  def insuranceId = column[Int]("insuranceId", NotNull)
+  def homeId = column[Int]("homeId", NotNull)
   def left = column[Date]("left")
   def * = (id, name, kana, age, sex, birthed, address, postal, phone, insuranceId, homeId, left)
-  def insurance = foreignKey("insurance_fk", insuranceId, insurances)(_.id)
-  def home = foreignKey("home_fk", homeId, homes)(_.id)
+
+  def insurance = foreignKey("insuranceFK", insuranceId, insurances)(_.id)
+  def home = foreignKey("homeFK", homeId, homes)(_.id)
+  def agedIndex = index("agedIndex", id)
 }
+
 val aged = TableQuery[Aged]
