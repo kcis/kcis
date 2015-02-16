@@ -25,5 +25,5 @@ class Aged(tag: Tag) extends Table[(Int, String, String, Byte, Char, Date, Strin
 
 object Aged {
   val aged = TableQuery[Aged]
-  def getAgedForIndex = (aged leftJoin insurances on (_.insuranceId === _.id)).map { case (a, i) => (a.id, a.name, a.kana, a.age, a.sex, a.birthed, i.expired.?) }.run
+  def getAgedForIndex = (aged leftJoin Insurances.insurances on (_.insuranceId === _.id)).map { case (a, i) => (a.id, a.name, a.kana, a.age, a.sex, a.birthed, i.expired.?) }.run
 }
