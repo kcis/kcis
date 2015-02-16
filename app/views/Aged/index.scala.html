@@ -20,8 +20,10 @@
       <tr>
         <td>◎</td>
   @defining(("/assets/pics/" + result._1 + ".jpg", result._2 + "さん", result._1, result._2, result._3, result._4, result._5, result._6, result._7)) {
-    case (src, alt, id, name, kana, age, sex, birthed, expired) =>
-        <td><img src=@src alt=@alt></td>
+    t match
+    {
+      case (src, alt, id, name, kana, age, sex, birthed, expired) =>
+        <td><img src="@src" alt="@alt"></td>
         <td>@id</td>
         <td>@name</td>
         <td>@kana</td>
@@ -30,6 +32,7 @@
         <td>@birthed</td>
         <td>@expired</td>
       </tr>
+    }
   }
 }
     </table>
