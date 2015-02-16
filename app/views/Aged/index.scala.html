@@ -16,12 +16,10 @@
         <th>誕生日</th>
         <th>介護保険確認</th>
       </tr>
-@for(result <- results)
-{
+@for(result <- results) {
       <tr>
         <td>◎</td>
-  @defining(("/assets/pics/" + aged.id + ".jpg", aged.name + "さん", result._1, result._2, result._3, result._4, result._5, result._6, result._7))
-  {
+  @defining(("/assets/pics/" + aged.id + ".jpg", aged.name + "さん", result._1, result._2, result._3, result._4, result._5, result._6, result._7)) {
     case (src, alt, id, name, kana, age, sex, birthed, expired) =>
         <td><img src="@src" alt="@alt"></td>
         <td>@id</td>
