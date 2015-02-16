@@ -19,4 +19,10 @@ object Accounts {
   }
 
   def findById(smid: (String, String)): Option[Account] = None // xxx
+
+  def findAll(): Seq[Account] = Seq.empty // xxx
+
+  def create(account: Account) {
+    // xxx
+  }
 }
