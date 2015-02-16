@@ -11,7 +11,7 @@ class Insurances(tag: Tag) extends Table[(Int, Byte, Date, Date)](tag, "insuranc
   def agedId = column[Int]("agedId", NotNull)
   def * = (id, nursingCareLevel, started, expired, agedId)
 
-  def aged = foreignKey("agedFK", agedId, aged)(_.id)
+  def aged = foreignKey("agedFK", agedId, Aged.aged)(_.id)
   def indexInsurance = index("indexInsurance", id)
 }
 
