@@ -15,4 +15,6 @@ class Insurances(tag: Tag) extends Table[(Int, Byte, Date, Date)](tag, "insuranc
   def indexInsurance = index("indexInsurance", id)
 }
 
-val insurances = TableQuery[Insurances]
+object Insurances {
+  val insurances = TableQuery[Insurances]
+}
