@@ -1,9 +1,11 @@
 package models
 import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.ast.ColumnOption.NotNull
+import scala.slick.jdbc.JdbcBackend._
 import java.sql.Date
 
-class Aged(tag: Tag) extends Table[(Int, String, String, Byte, Char, Date, String, String, String, Int, Int, Date)](tag, "aged") {
+class Aged(tag: Tag) extends Table[(Int, String, String, Byte, Char, Date, String, String, String, Int, Int, Date)](tag, "aged")
+{
   def id = column[Int]("id", O.PrimaryKey)
   def name = column[String]("name", O.Length(255, false), NotNull)
   def kana = column[String]("kana", O.Length(255, false), NotNull)
@@ -23,7 +25,16 @@ class Aged(tag: Tag) extends Table[(Int, String, String, Byte, Char, Date, Strin
   def agedIndex = index("agedIndex", id)
 }
 
-object Aged {
+object Aged
+{
+  val db = Database.forURL("jdbc:h2:mem:play", user = "sa")
   val aged = TableQuery[Aged]
-  def getAgedForIndex = (aged leftJoin Insurances.insurances on (_.insuranceId === _.id)).map { case (a, i) => (a.id, a.name, a.kana, a.age, a.sex, a.birthed, i.expired.?) }.run
+  def getAgedForIndex = db.withSession
+  { implicit session =>
+    (aged leftJoin Insurances.insurances on (_.insuranceId === _.id))
+    .map
+    {
+      case (a, i) => (a.id, a.name, a.kana, a.age, a.sex, a.birthed, i.expired.?)
+    }.run
+  }
 }
