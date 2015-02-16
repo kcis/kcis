@@ -12,4 +12,4 @@ class Homes(tag: Tag) extends Table[(Int, String, String)](tag, "homes") {
   def indexHomes = index("indexHomes", id)
 }
 
-object homes extends TableQuery[Homes]
+val homes = TableQuery[Homes]
