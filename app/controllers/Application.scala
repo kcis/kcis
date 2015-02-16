@@ -15,30 +15,26 @@ import scala.reflect._
 trait AuthConfigImpl extends AuthConfig {
   type Id = Int
   type User = Account
-  type Authority = Role
   val idTag: ClassTag[Id] = classTag[Id]
   val sessionTimeoutInSeconds: Int = 3600
 
-  def resolveUser(id: Id) = Account.findById(id)
-  def loginSucceeded(request: RequestHeader) = Redirect(routes.Application.index)
-  def logoutSucceeded(request: RequestHeader) = Redirect(routes.Application.login)
-  def authenticationFailed(request: RequestHeader) = Redirect(routes.Application.login)
-  def authorizationFailed(request: RequestHeader) = Forbidden("no permission")
-  def authorize(user: User, authority: Authority) = (user.permission, authority) match {
-    case (Administrator, _) => true
-    case (NormalUser, NormalUser) => true
-    case _ => false
-  }
+  def resolveUser(id: Id)(implicit ctx: ExecutionContext): Future[Option[User]] = Future.successful(Accounts.findById(id))
+
+  def loginSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
+    Future.successful(Redirect(routes.Application.login))
+  def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
+    Future.successful(Redirect(routes.Application.login))
+  def authenticationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
+    Future.successful(Redirect(routes.Application.login))
+  def authorizationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
+    Future.successful(Forbidden("no permission"))
+  def authorize(user: User, authority: Authority)(implicit ctx: ExecutionContext): Future[Boolean] =
+    Future.successful(false) // xxx
 }
 
 object Application extends Controller with LoginLogout with AuthConfigImpl {
-
-  def index = Action {
-    Ok(views.html.index("Your new application is ready."))
-  }
-
   val loginForm = Form {
-    mapping("email" -> email, "password" -> text)(Account.authenticate)(_.map(u => (u.email, "")))
+    mapping("email" -> email, "password" -> text)(Accounts.authenticate)(_.map(u => (u.email, "")))
       .verifying("Invalid email or password", result => result.isDefined)
   }
 
