@@ -31,7 +31,7 @@ object Aged
   def getAgedForIndex = db.withSession
   {
     implicit session =>
-    (aged leftJoin Insurances.insurances on (_.insuranceId === _.id))
+    (this.aged leftJoin Insurances.insurances on (_.insuranceId === _.id))
     .map
     {
       case (a, i) => (a.id, a.name, a.kana, a.age, a.sex, a.birthed, i.expired.?)
