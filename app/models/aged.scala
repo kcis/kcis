@@ -26,14 +26,16 @@ class Aged(tag: Tag) extends Table[(Int, String, String, Byte, String, Date, Str
 
 object Aged
 {
-  val db = Database.forURL("jdbc:h2:mem:play", user = "sa")
+  val db = Database.forURL("jdbc:h2:mem:play", user = "sa", driver = "org.h2.Driver")
   val aged = TableQuery[Aged]
   def getAgedForIndex = db.withSession
-  { implicit session =>
+  {
+    implicit session =>
     (aged leftJoin Insurances.insurances on (_.insuranceId === _.id))
     .map
     {
       case (a, i) => (a.id, a.name, a.kana, a.age, a.sex, a.birthed, i.expired.?)
-    }.run
+    }
+    .run
   }
 }
