@@ -19,10 +19,15 @@
 @for(result <- results) {
       <tr>
         <td>◎</td>
-  @defining(("/assets/pics/" + result._1 + ".jpg", result._2 + "さん", result._1, result._2, result._3, result._4, result._5, result._6, result._7)) {
-    t => {
-      t match {
-        case (src, alt, id, name, kana, age, sex, birthed, expired) =>
+  @defining("/assets/pics" + result._1 + ".jpg") { src =>
+  @defining(result._2 + "さん") { alt =>
+  @defining(result_.1) { id =>
+  @defining(result._2) { name =>
+  @defining(result._3) { kana =>
+  @defining(result._4) { age =>
+  @defining(result._5) { sex =>
+  @defining(result._6) { birthed =>
+  @defining(result._7) { expired =>
         <td><img src="@src" alt="@alt"></td>
         <td>@id</td>
         <td>@name</td>
@@ -32,9 +37,7 @@
         <td>@birthed</td>
         <td>@expired</td>
       </tr>
-      }
-    }
-  }
+  }}}}}}}}}
 }
     </table>
   </body>
