@@ -13,7 +13,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.reflect._
 
 trait AuthConfigImpl extends AuthConfig {
-  type Id = Int
+  type Id = (String, String)
   type User = Account
   val idTag: ClassTag[Id] = classTag[Id]
   val sessionTimeoutInSeconds: Int = 3600
@@ -34,7 +34,7 @@ trait AuthConfigImpl extends AuthConfig {
 
 object Application extends Controller with LoginLogout with AuthConfigImpl {
   val loginForm = Form {
-    mapping("email" -> email, "password" -> text)(Accounts.authenticate)(_.map(u => (u.email, "")))
+    mapping("station_id" -> text, "member_id" -> text, "password" -> text)(Accounts.authenticate)(_.map(u => (u.station_id, u.member_id, "")))
       .verifying("Invalid email or password", result => result.isDefined)
   }
 
@@ -51,7 +51,7 @@ object Application extends Controller with LoginLogout with AuthConfigImpl {
   def authenticate = Action.async { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.login(formWithErrors))),
-      user           => gotoLoginSucceeded(user.get.id)
+      user           => gotoLoginSucceeded((user.get.station_id, user.get.member_id))
     )
   }
 }

@@ -2,22 +2,21 @@ package models
 
 import play.api.db.slick.Config.driver.simple._
 
-case class Account(id: Int, email: String, password: String)
+case class Account(station_id: String, member_id: String, password: String)
 
 class Accounts(tag: Tag) extends Table[Account](tag, "ACCOUNT") {
-  def id = column[Int]("ID", O.PrimaryKey)
-  def email = column[String]("EMAIL")
+  def station_id = column[String]("STATION_ID", O.PrimaryKey)
+  def member_id = column[String]("MEMBER_ID", O.PrimaryKey)
   def password = column[String]("PASSWORD")
-  def * = (id, email, password) <> (Account.tupled, Account.unapply _)
+  def * = (station_id, member_id, password) <> (Account.tupled, Account.unapply _)
 }
 
 object Accounts {
   val account = TableQuery[Accounts]
 
-  def authenticate(email: String, password: String): Option[Account] = {
-    findByEmail(email).filter { account => password.equals(account.password) }
+  def authenticate(sid: String, mid: String, password: String): Option[Account] = {
+    findById((sid, mid)).filter { account => password.equals(account.password) }
   }
 
-  def findByEmail(email: String): Option[Account] = None // xxx
-  def findById(id: Int): Option[Account] = None // xxx
+  def findById(smid: (String, String)): Option[Account] = None // xxx
 }
