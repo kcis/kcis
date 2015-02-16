@@ -1,7 +1,6 @@
 package models
 import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.ast.ColumnOption.NotNull
-import scala.slick.jdbc.JdbcBackend._
 import java.sql.Date
 
 class Aged(tag: Tag) extends Table[(Int, String, String, Byte, Char, Date, String, String, String, Int, Int, Date)](tag, "aged")
