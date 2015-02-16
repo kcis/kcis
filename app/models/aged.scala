@@ -19,8 +19,8 @@ class Aged(tag: Tag) extends Table[(Int, String, String, Byte, String, Date, Str
   def left = column[Date]("left")
   def * = (id, name, kana, age, sex, birthed, address, postal, phone, insuranceId, homeId, left)
 
-  def insurance = foreignKey("insuranceFK", insuranceId, insurances)(_.id)
-  def home = foreignKey("homeFK", homeId, homes)(_.id)
+  def insurance = foreignKey("insuranceFK", insuranceId, Insurances.insurances)(_.id)
+  def home = foreignKey("homeFK", homeId, Homes.homes)(_.id)
   def agedIndex = index("agedIndex", id)
 }
 
