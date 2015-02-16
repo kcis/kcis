@@ -1,6 +1,7 @@
 package models
 import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.ast.ColumnOption.NotNull
+import java.sql.Date
 
 class Insurances(tag: Tag) extends Table[(Int, Byte, Date, Date)](tag, "insurances") {
   def id = column[Int]("id", O.PrimaryKey)
