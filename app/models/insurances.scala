@@ -3,7 +3,7 @@ import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.ast.ColumnOption.NotNull
 import java.sql.Date
 
-class Insurances(tag: Tag) extends Table[(Int, Byte, Date, Date, Int)](tag, "insurances") {
+class Insurances(tag: Tag) extends Table[(Int, Byte, Date, Date, Int)](tag, "INSURANCES") {
   def id = column[Int]("id", O.PrimaryKey)
   def nursingCareLevel = column[Byte]("level", NotNull)
   def started = column[Date]("started", NotNull)
