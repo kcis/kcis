@@ -8,7 +8,7 @@ class Aged(tag: Tag) extends Table[(Int, String, String, Byte, Char, Date, Strin
   def name = column[String]("name", O.Length(255, false), NotNull)
   def kana = column[String]("kana", O.Length(255, false), NotNull)
   def age = column[Byte]("age", NotNull)
-  def sex = column[String]("sex", O.Length(4, NotNull), NotNull)
+  def sex = column[String]("sex", O.Length(4, false), NotNull)
   def birthed = column[Date]("birthed", NotNull)
   def address = column[String]("address", O.Length(65535, false), NotNull)
   def postal = column[String]("postal", O.Length(7, false), NotNull)
