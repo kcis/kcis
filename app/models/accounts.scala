@@ -11,7 +11,7 @@ class Accounts(tag: Tag) extends Table[(Int, String, String, Int)](tag, "ACCOUNT
   def stationId = column[Int]("STATION_ID", NotNull)
   def * = (id, userName, password, stationId)
 
-  def home = foreignKey("HOME_FK", stationId, Homes.homes)(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Restrict)
+  def station = foreignKey("HOME_FK", stationId, Homes.homes)(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Restrict)
 }
 
 object Accounts
