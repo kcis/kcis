@@ -18,11 +18,11 @@ object Accounts
 {
   val accounts = TableQuery[Accounts]
 
-  def matchAccount(name: String, raw: String, stationId: Int)(implicit session: Session) : Int = accounts.filter(a => a.userName === name && a.password === sign(raw) && a.stationId === stationId).length.run
+  def matchAccount(name: String, raw: String)(implicit session: Session) = accounts.filter(a => a.userName === name || a.password === sign(raw)).run
 
-  def deleteAccount(name: String)(implicit session: Session): Int = accounts.filter(a => a.userName === name).delete
+  def deleteAccount(name: String)(implicit session: Session) = accounts.filter(a => a.userName === name).delete
 
-  def createAccount(name: String, raw: String, stationId: Int)(implicit session: Session): Int = accounts.map(a => (a.userName, a.password, a.stationId)).insert(name, sign(raw), stationId)
+  def createAccount(name: String, raw: String, stationId: Int)(implicit session: Session) = accounts.map(a => (a.userName, a.password, a.stationId)).insert(name, sign(raw), stationId)
 
-  def updateAccount(name: String, raw: String, stationId: Int)(implicit session: Session): Int = accounts.filter(a => a.userName === name && a.password === sign(raw) && a.stationId === stationId).map(a => (a.userName, a.password, a.stationId)).update(name, sign(raw), stationId)
+  def updateAccount(name: String, raw: String, stationId: Int)(implicit session: Session) = accounts.filter(a => a.userName === name && a.password === sign(raw) && a.stationId === stationId).map(a => (a.userName, a.password, a.stationId)).update(name, sign(raw), stationId)
 }
