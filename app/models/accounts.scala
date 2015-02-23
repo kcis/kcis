@@ -3,13 +3,14 @@ import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.ast.ColumnOption.NotNull
 import play.api.libs.Crypto
 
-class Accounts(tag: Tag) extends Table[(Int, String, String, Int)](tag, "ACCOUNTS")
+class Accounts(tag: Tag) extends Table[(Int, String, String, Int, String)](tag, "ACCOUNTS")
 {
   def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
   def userName = column[String]("USER_NAME", NotNull)
   def password = column[String]("PASSWORD", NotNull)
   def stationId = column[Int]("STATION_ID", NotNull)
-  def * = (id, userName, password, stationId)
+  def position = column[String]("POSITION", NotNull)
+  def * = (id, userName, password, stationId, position)
 
   def station = foreignKey("HOME_FK", stationId, Homes.homes)(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Restrict)
 }
