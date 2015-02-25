@@ -36,5 +36,5 @@ object Aged
     }
     .run
   
-  def createAged(name: String, kana: String, age: Byte, sex: String, birthed: Date, address: String, postal: String, phone: String, insuranceId: Int, homeId: Int, left: Date) = aged.map(a => a.name, a.kana, a.age, a.sex, a.birthed, a.address, a.postal, a.phone, a.insuranceId, a.homeId, a.left).insert(name, kana, age, sex, birthed, address, postal, phone, insuranceId, homeId, left)
+  def createAged(name: String, kana: String, age: Byte, sex: String, birthed: Date, address: String, postal: String, phone: String, insuranceId: Int, homeId: Int, left: Date)(implicit session: Session) = aged.map(a => a.name, a.kana, a.age, a.sex, a.birthed, a.address, a.postal, a.phone, a.insuranceId, a.homeId, a.left).insert(name, kana, age, sex, birthed, address, postal, phone, insuranceId, homeId, left)
 }
