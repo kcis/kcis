@@ -14,15 +14,15 @@ class Homes(tag: Tag) extends Table[(Int, String, String, String)](tag, "HOMES")
 
 object Homes {
   val homes = TableQuery[Homes]
-  def createHomes(corporationName: String, officeName: String, careType: String)(implicit session: Session) =
+  def createHomes(corporationName: String, officeName: String, careType: String)(implicit session: Session)
   {
     homes.map(h => (h.corporationName, h.officeName, h.careType)).insert(corporationName, officeName, careType)
   }
-  def updateHomes(id: Int, corporationName: String, officeName: String, careType: String)(implicit session: Session) =
+  def updateHomes(id: Int, corporationName: String, officeName: String, careType: String)(implicit session: Session)
   {
     homes.filter(h => h.id === id).map(h => (h.corporationName, h.officeName, h.careType)).update(corporationName, officeName, careType)
   }
-  def deleteHomes(id: Int)(implicit session: Session) =
+  def deleteHomes(id: Int)(implicit session: Session)
   {
     homes.filter(h => h.id === id).delete
   }

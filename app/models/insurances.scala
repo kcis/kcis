@@ -16,7 +16,7 @@ class Insurances(tag: Tag) extends Table[(Int, Byte, Date, Date, Int)](tag, "INS
 
 object Insurances {
   val insurances = TableQuery[Insurances]
-  def createInsurance(id: Int, nursingCareLevel: Byte, started: Date)(implicit session: Session) =
+  def createInsurance(id: Int, nursingCareLevel: Byte, started: Date)(implicit session: Session)
   {
     /*
      * 介護保険の適用期限は登録(更新)から半年後の末日である。
@@ -33,7 +33,7 @@ object Insurances {
     }
     else throw new IllegalArgumentException()
   }
-  def updateInsurance(id: Int, nursingCareLevel: Byte, started: Date)(implicit session: Session) =
+  def updateInsurance(id: Int, nursingCareLevel: Byte, started: Date)(implicit session: Session)
   {
     val expired = Calendar.getInstance()
     expired.setTime(started)
@@ -42,7 +42,7 @@ object Insurances {
     expired.set(Calendar.HOUR_OF_DAY, 18)
     insurances.filter(i => i.id === id).map(i => (i.nursingCareLevel, i.started, i.expired)).update(nursingCareLevel, started, expired.getTime())
   }
-  def deleteInsurance(id: Int)(implicit session: Session) =
+  def deleteInsurance(id: Int)(implicit session: Session)
   {
     insurances.filter(i => i.id === id).delete
   }
