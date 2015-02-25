@@ -42,8 +42,5 @@ object Insurances {
     expired.set(Calendar.HOUR_OF_DAY, 18)
     insurances.filter(i => i.id === id).map(i => (i.nursingCareLevel, i.started, i.expired)).update(nursingCareLevel, started, expired.getTime())
   }
-  def deleteInsurance(id: Int)(implicit session: Session)
-  {
-    insurances.filter(i => i.id === id).delete
-  }
+  def deleteInsurance(id: Int)(implicit session: Session) = insurances.filter(i => i.id === id).delete
 }
