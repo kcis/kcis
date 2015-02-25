@@ -22,12 +22,16 @@ object Insurances {
      * 介護保険の適用期限は登録(更新)から半年後の末日である。
      * また、保険の更新を行うために必要な市役所は、遅くとも午後6時には閉まる。
      */
-    val expired = Calendar.getInstance()
-    expired.setTime(started)
-    expired.add(Calendar.MONTH, 6)
-    expired.set(Calendar.DATE, expired.getActualMaximum(Calendar.DATE))
-    expired.set(Calendar.HOUR_OF_DAY, 18)
-    insurances.map(i => (i.id, i.nursingCareLevel, i.started, i.expired)).insert(id, nursingCareLevel, started, expired.getTime())
+    if (id > 0 && id <= Integer.MAX_VALUE)
+    {
+      val expired = Calendar.getInstance()
+      expired.setTime(started)
+      expired.add(Calendar.MONTH, 6)
+      expired.set(Calendar.DATE, expired.getActualMaximum(Calendar.DATE))
+      expired.set(Calendar.HOUR_OF_DAY, 18)
+      insurances.map(i => (i.id, i.nursingCareLevel, i.started, i.expired)).insert(id, nursingCareLevel, started, expired.getTime())
+    }
+    else throw new IllegalArgumentException()
   }
   def updateInsurance(id: Int, nursingCareLevel: Byte, started: Date)(implicit session: Session) =
   {
