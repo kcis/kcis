@@ -13,21 +13,12 @@ object Global extends GlobalSettings
     Homes.createHomes("株式会社センティリオン", "介護ホームセンティリオン", "グループホーム")
 
     // 介護保険テーブルへのデータの挿入
-    var n = (Math.random() * Integer.MAX_VALUE).asInstanceOf[Int]
-    for (i <- 1 until n)
+    for (i <- 1 until 25)
     {
-      Insurances.createInsurance(i, (Math.random() * 5).asInstanceOf[Int], new Date((Math.random * Long.MAX_VALUE).asInstanceOf[Long]))
+      Insurances.createInsurance(i, ((Math.random() * 5) + 1).asInstanceOf[Int], new Date((Math.random() * Long/MAX_VALUE).asInstanceOf[Long]))
     }
 
     // 利用者テーブルへのデータの挿入
-    val c = Calendar.getInstance()
-    val today = new Date(System.currentTimeMillis());
-    for (i <- 1 until n)
-    {
-      c.set(Calendar.YEAR, (2015 - Math.random() * 100).asInstanceOf[Int])
-      c.set(Calendar.MONTH, (i % 12) + 1)
-      c.set(Calendar.DATE, (i % c.getActualMaximum(Calendar.DATE)) + 1)
-      Aged.createAged("N", "N", ((Math.random()) * i % 100).asInstanceOf[Int], "女性", c.getTime(), "A", Integer.toString(i), Integer.toString(i), i, i, null)
-    }
+    Aged.createAged()
   }
 }
