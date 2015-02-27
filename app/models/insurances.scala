@@ -4,12 +4,14 @@ import java.util.Calendar
 import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.ast.ColumnOption.NotNull
 
-class Insurances(tag: Tag) extends Table[(Int, Byte, Date, Date, Int)](tag, "INSURANCES") {
+case class Insurance(id: Int, nursingCareLevel: Byte, started: Date, expired: Date)
+
+class Insurances(tag: Tag) extends Table[Insurance](tag, "INSURANCES") {
   def id = column[Int]("ID", O.PrimaryKey)
   def nursingCareLevel = column[Byte]("LEVEL", NotNull)
   def started = column[Date]("STARTED", NotNull)
   def expired = column[Date]("EXPIRES", NotNull)
-  def * = (id, nursingCareLevel, started, expired, agedId)
+  def * = (id, nursingCareLevel, started, expired) <> (Insurance.tupled, Insurance.unapply)
 
   def insuranceIndex = index("INSURANCE_INDEX", id)
 }
@@ -25,11 +27,11 @@ object Insurances {
      * 2回目以降: 前回の更新が適用され始めた日から1年後の月末まで
      */
     val expired = Calendar.getInstance()
-    tmp.setTime(started)
+    expired.setTime(started)
     val today = Calendar.getInstance()
     today.setTime(new Date(System.currentTimeMillis()))
 
-    if (today.get(Calendar.YEAR) == expired.get(Calendar.YEAR) && today.get(Calendar.MONTH) - expired.get(Calendar.MONTH) < 6)
+    if (today.get(Calendar.YEAR) == started.get(Calendar.YEAR) && today.get(Calendar.MONTH) - started.get(Calendar.MONTH) < 6)
     {
       expired.add(Calendar.MONTH, 6)
       expired.set(Calendar.DATE, expired.getActualMaximum(Calendar.DATE))
@@ -47,42 +49,40 @@ object Insurances {
   private def doAfterChecking(id: Int, f: => Int)
   {
     if (id > 0) f
-    else throw new IllegalArgumentException("ID は 1 から Intの最大値(約21億) の範囲でなければなりません。")
+    else throw new IllegalArgumentException("ID は 1 以上 2147483647 以下にしてください。")
   }
 
   // createInsurance() および updateInsurance() 用のチェッカ
-  private def doAfterChecking(id: Int, nursingCareLevel: Byte, f: => Int)
+  private def doAfterChecking(insurance: Insurance, f: => Int)
   {
-    if (id > 0 && nursingCareLevel > 0 && nursingCareLevel <= 5) f
-    else
-    {
-      if (id <= 0) throw new IllegalArgumentException("IDは 1 から Intの最大値(約21億) の範囲でなければなりません。")
-      else throw new IllegalArgumentException("要介護度は 1 から 5 の範囲でなければなりません。")
-    }
+    val today = new Date(System.currentTimeMillis())
+
+    if (insurance.id <= 0) throw new IllegalArgumentException("ID は 1 以上にしてください。")
+    else if (insurance.nursingCareLevel < 0 || insurance.nursingCareLevel > 5) throw new IllegalArgumentException("要介護度は 1 から 5 までです。")
+    else if (insurance.started.after(today)) throw new IllegalArgumentException("今日現在、まだ介護保険を認定されていない方を入居させることはできません。")
+    else f
   }
 
-  def createInsurance(id: Int, nursingCareLevel: Byte, started: Date)(implicit session: Session)
+  def createInsurance(insurance: Insurance)(implicit session: Session)
   {
     doAfterChecking
     (
-      id,
-      nursingCareLevel,
+      insurance,
       {
-        val expired = checkNextTerm(started)
-        insurances.map(i => (i.id, i.nursingCareLevel, i.started, i.expired)).insert(id, nursingCareLevel, started, expired)
+        val expired = checkNextTerm(insurance.started)
+        insurances.insert(insurance.id, insurance.nursingCareLevel, insurance.started, expired)
       }
     )
   }
 
-  def updateInsurance(id: Int, nursingCareLevel: Byte, started: Date)(implicit session: Session)
+  def updateInsurance(insurance: Insurance)(implicit session: Session)
   {
     doAfterChecking
     (
-      id,
-      nursingCareLevel,
+      insurance,
       {
         val expired = checkNextTerm(started)
-        insurances.filter(i => i.id === id).map(i => (i.nursingCareLevel, i.started, i.expired)).update(nursingCareLevel, started, expired)
+        insurances.filter(i => i.id === id).update(nursingCareLevel, started, expired)
       }
     )
   }
