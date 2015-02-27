@@ -3,14 +3,16 @@ import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.ast.ColumnOption.NotNull
 import play.api.libs.Crypto
 
-class Accounts(tag: Tag) extends Table[(Int, String, String, Int, Int)](tag, "ACCOUNTS")
+case class Account(userName: String, password: String, stationId: Int, roleId: Int)
+
+class Accounts(tag: Tag) extends Table[(Int, Account)](tag, "ACCOUNTS")
 {
   def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
   def userName = column[String]("USER_NAME", NotNull)
   def password = column[String]("PASSWORD", NotNull)
   def stationId = column[Int]("STATION_ID", NotNull)
   def roleId = column[Int]("POSITION", NotNull)
-  def * = (id, userName, password, stationId, position)
+  def * = (userName, password, stationId, position) <> (Account.tupled, Account.unapply)
 
   def station = foreignKey("HOME_FK", stationId, Homes.homes)(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Restrict)
   def role = foreignKey("ROLE_FK", roleId, Roles.roles)(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Restrict)
@@ -20,11 +22,12 @@ object Accounts
 {
   val accounts = TableQuery[Accounts]
 
-  def matchAccount(name: String, raw: String)(implicit session: Session) = accounts.filter(a => a.userName === name || a.password === sign(raw)).run
+  // アカウントが新規登録される際に、ID か パスワード に重複が見つからないかを見る。1行でも結果が返ればエラーとする。
+  def matchAccount(account: Account)(implicit session: Session) = accounts.filter(a => a.userName === account.userName || a.password === account.password).run
 
-  def deleteAccount(name: String)(implicit session: Session) = accounts.filter(a => a.userName === name).delete
+  def deleteAccount(id: Int)(implicit session: Session) = accounts.filter(a => a.id === id).delete
 
-  def createAccount(name: String, raw: String, stationId: Int)(implicit session: Session) = accounts.map(a => (a.userName, a.password, a.stationId)).insert(name, sign(raw), stationId)
+  def createAccount(account: Account)(implicit session: Session) = accounts.insert(account)
 
-  def updateAccount(name: String, raw: String, stationId: Int)(implicit session: Session) = accounts.filter(a => a.userName === name && a.password === sign(raw) && a.stationId === stationId).map(a => (a.userName, a.password, a.stationId)).update(name, sign(raw), stationId)
+  def updateAccount(id: Int, account: Account)(implicit session: Session) = accounts.filter(a => a.id === id).update(account)
 }
