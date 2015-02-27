@@ -10,5 +10,10 @@ object SessionManager
   def deleteLoginSession(implicit session: Session) = session - ("homeId") - ("userId") - ("roleId")
   // まだログインしていない状態でログイン以外の画面を開いた時に、ログイン画面に飛ばしつつも元々開こうとしていた画面を覚えておくためのもの
   def redirectFrom(uri: String)(implicit session: Session) = session + ("redirectFrom", uri)
-  def authorized(implicit session: Session) = session - ("redirectFrom")
+  def authorized(implicit session: Session)
+  {
+    val redirectFrom = session.get("redirectFrom")
+    session - ("redirectFrom")
+    redirectFrom
+  }
 }
