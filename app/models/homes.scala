@@ -2,12 +2,14 @@ package models
 import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.ast.ColumnOption.NotNull
 
-class Homes(tag: Tag) extends Table[(Int, String, String, String)](tag, "HOMES") {
+case class Home(corporationName: String, officeName: String, careType: String)
+
+class Homes(tag: Tag) extends Table[(Int, Home)](tag, "HOMES") {
   def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
   def corporationName = column[String]("CORPORATION_NAME", NotNull)
   def officeName = column[String]("OFFICE_NAME", NotNull)
   def careType = column[String]("CARE_TYPE", NotNull)
-  def * = (id, corporationName, officeName, careType)
+  def * = (corporationName, officeName, careType) <> (Home.tupled, Home.unapply)
 
   def indexHomes = index("HOMES_INDEX", id)
 }
@@ -15,9 +17,9 @@ class Homes(tag: Tag) extends Table[(Int, String, String, String)](tag, "HOMES")
 object Homes {
   val homes = TableQuery[Homes]
 
-  def createHomes(corporationName: String, officeName: String, careType: String)(implicit session: Session) = homes.map(h => (h.corporationName, h.officeName, h.careType)).insert(corporationName, officeName, careType)
+  def createHomes(home: Home)(implicit session: Session) = homes.insert(home)
 
-  def updateHomes(id: Int, corporationName: String, officeName: String, careType: String)(implicit session: Session) = homes.filter(h => h.id === id).map(h => (h.corporationName, h.officeName, h.careType)).update(corporationName, officeName, careType)
+  def updateHomes(id: Int, home: Home)(implicit session: Session) = homes.filter(h => h.id === id).update(home)
 
   def deleteHomes(id: Int)(implicit session: Session) = homes.filter(h => h.id === id).delete
 }
