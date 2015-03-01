@@ -1,8 +1,9 @@
 package models
-import scala.slick.driver.MySQLDriver.simple._
-import scala.slick.ast.ColumnOption.NotNull
+import controllers.SessionManager
 import java.sql.Date
 import java.util.Calendar
+import scala.slick.driver.MySQLDriver.simple._
+import scala.slick.ast.ColumnOption.NotNull
 
 case class Aged(name: String, kana: String, age: Byte, sex: String, birthed: Date, address: String, postal: String, phone: String, insuranceId: Int, homeId: Int, left: Date)
 
@@ -29,7 +30,7 @@ class Ageds(tag: Tag) extends Table[(Int, Aged)](tag, "AGEDS")
 
 object Ageds
 {
-  val ageds = TableQuery[Ageds]
+  private val ageds = TableQuery[Ageds]
 
   private def doAfterChecking(aged: Aged, f: => T)
   {
@@ -48,7 +49,11 @@ object Ageds
   }
 
   // 利用者一覧に使うデータはこれ一つでまとめて表示できる
-  def getAgedForIndex(implicit session: Session) = (ageds leftJoin Insurances.insurances on (_.insuranceId === _.id)).map{case (a, i) => (a.id, a.name, a.kana, a.age, a.sex, a.birthed, i.expired.?)}.run
+  def joinForLists(implicit session: Session)
+  {
+    val insurances = Insurances.getTableQuery()
+    (aged leftJoin insurances on (_.insuranceId === _.id)).map{case (a, i) => (a.id, a.name, a.kana, a.age, a.sex, a.birthed, i.expired.?)}.filter(a => a.homeId === Integer.parseInt(SessionManager.getHomeId())).run
+  }
   
   def createAged(aged: Aged)(implicit session: Session) = doAfterChecking(aged, {ageds.insert(aged)})
 

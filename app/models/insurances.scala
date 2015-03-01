@@ -17,7 +17,7 @@ class Insurances(tag: Tag) extends Table[Insurance](tag, "INSURANCES") {
 }
 
 object Insurances {
-  val insurances = TableQuery[Insurances]
+  private val insurances = TableQuery[Insurances]
 
   private def checkNextTerm(started: Date): Date
   {
@@ -62,6 +62,9 @@ object Insurances {
     else if (insurance.started.after(today)) throw new IllegalArgumentException("今日現在、まだ介護保険を認定されていない方を入居させることはできません。")
     else f
   }
+
+  // 利用者テーブルとの結合用(private化して隠蔽するため、他のテーブルが条件として使う場合に参照できない問題をこれで解決する)
+  def getTableQuery = insurances
 
   def createInsurance(insurance: Insurance)(implicit session: Session)
   {

@@ -15,7 +15,10 @@ class Homes(tag: Tag) extends Table[(Int, Home)](tag, "HOMES") {
 }
 
 object Homes {
-  val homes = TableQuery[Homes]
+  private val homes = TableQuery[Homes]
+
+  // 利用者テーブルとのマージ用(private化して隠蔽するため、他のテーブルが条件として使う場合に参照できない問題をこれで解決する。)
+  def getTableQuery = homes
 
   def createHomes(home: Home)(implicit session: Session) = homes.insert(home)
 

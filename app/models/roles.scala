@@ -14,7 +14,7 @@ class Roles(tag: Tag) extends Table[(Int, Role)](tag, "ROLES")
 
 object Roles
 {
-  val roles = TableQuery[Roles]
+  private val roles = TableQuery[Roles]
 
   def createRoles(role: Roll)(implicit session: Session) = roles.insert(role)
   def updateRoles(id: Int, role: Roll)(implicit session: Session) = roles.filter(r => r.id === id).update(role)

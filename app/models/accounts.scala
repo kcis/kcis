@@ -20,7 +20,7 @@ class Accounts(tag: Tag) extends Table[(Int, Account)](tag, "ACCOUNTS")
 
 object Accounts
 {
-  val accounts = TableQuery[Accounts]
+  private val accounts = TableQuery[Accounts]
 
   // アカウントが新規登録される際に、ID か パスワード に重複が見つからないかを見る。1行でも結果が返ればエラーとする。
   def matchAccount(account: Account)(implicit session: Session) = accounts.filter(a => a.userName === account.userName || a.password === account.password).run
