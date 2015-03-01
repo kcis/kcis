@@ -4,6 +4,10 @@
 
 # Home page
 GET     /               controllers.Application.index
+# ログイン/ログアウト
+GET     /login          controllers.Application.login
+POST    /login          controllers.Application.auth
+GET     /logout         controllers.Application.logout
 # 利用者一覧
 GET     /ageds          controllers.AgedsController.index
 
