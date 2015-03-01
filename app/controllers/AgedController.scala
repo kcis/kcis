@@ -5,6 +5,6 @@ import models._
 
 object AgedController extends Controller {
   def index = DBAction { implicit request =>
-    Ok(views.html.Aged.index(request.session, Aged.getAgedForIndex))
+    Ok(views.html.Ageds.index(request.session, Ageds.getAgedForIndex))
   }
 }
