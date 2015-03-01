@@ -70,7 +70,7 @@ object Insurances {
       insurance,
       {
         val expired = checkNextTerm(insurance.started)
-        insurances.insert(insurance.id, insurance.nursingCareLevel, insurance.started, expired)
+        insurances.insert(Insurance(insurance.id, insurance.nursingCareLevel, insurance.started, expired))
       }
     )
   }
@@ -82,7 +82,7 @@ object Insurances {
       insurance,
       {
         val expired = checkNextTerm(started)
-        insurances.filter(i => i.id === id).update(nursingCareLevel, started, expired)
+        insurances.filter(i => i.id === id).update(Insurance(insurance.id, insurance.nursingCareLevel, insurance.started, expired))
       }
     )
   }
