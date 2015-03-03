@@ -1,7 +1,6 @@
 package models
 import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.ast.ColumnOption.NotNull
-import play.api.libs.Crypto
 
 case class Account(userName: String, password: String, stationId: Int, roleId: Int)
 
@@ -22,8 +21,11 @@ object Accounts
 {
   private val accounts = TableQuery[Accounts]
 
-  // アカウントが新規登録される際に、ID か パスワード に重複が見つからないかを見る。1行でも結果が返ればエラーとする。
-  def matchAccount(account: Account)(implicit session: Session) = accounts.filter(a => a.userName === account.userName || a.password === account.password).run
+  // アカウントが新規登録される際に、ID か パスワード に重複が見つからないかを見る。1行でも結果が返れば登録済みである。
+  def checkDuplication(account: Account)(implicit session: Session) = accounts.filter(a => a.userName === account.userName || a.password === account.password).run
+
+  // checkDuplication() と似ているが、こちらはアカウント認証時にIDとPasswordの組が一致するかを見る。
+  def matchAccount(account: Account)(implicit session: Session) = accounts.filter(a => a.userName === account.userName && a.password === account.password).run
 
   def deleteAccount(id: Int)(implicit session: Session) = accounts.filter(a => a.id === id).delete
 
