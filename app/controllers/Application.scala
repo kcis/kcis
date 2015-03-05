@@ -1,10 +1,11 @@
 package controllers
+import models.Accounts._
+import models.Roles._
 import play.api._
 import play.api.data._
 import play.api.data.Forms._
+import play.api.libs.Crypto._
 import play.api.mvc._
-
-case class LoginParameter(stationId: Int, memberId: String, password: String)
 
 object Application extends Controller
 {
@@ -23,14 +24,21 @@ object Application extends Controller
   {
     val authForm: Form[LoginParameter] = Form
     (
-      mapping
+      tuple
       (
-        "stationId" -> text,
-        "memberId" -> text,
+        "homeId" -> number(min = 1),
+        "userName" -> text,
         "password" -> text
-      )(LoginParameter.apply)(LoginParameter.unapply)
+      )
     )
-    val loginParameter = authForm.bindFormRequest.get
+    val (homeId, userName, password) = authForm.bindFormRequest.get
+    if (checkDuplication(userName, sign(password)))
+    {
+      val roleId = getRoleId(userName)
+      val authority = getAuthority(roleId)
+      SessionManager.createLoginSession(homeId, userName, roleId)
+      Redirect(SessionManager.authorized(), 302)
+    }
     
   }
 }
